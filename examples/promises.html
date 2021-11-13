@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>imgcache.js - Tests - promises</title>
+    <script src="../lib/imgcache.js"></script>
+    <script src="../lib/imgcache-promise.js"></script>
+    <link rel="stylesheet" href="examples.css">
+</head>
+<body>
+
+    <h1>imgcache-promise.js - Promises</h1>
+
+    <div class="clearfix">
+      <h3>Errors</h3>
+      <ul class="errors" id="errors">
+      </ul>
+    </div>
+
+    <div class="clearfix">
+
+        <div id="actions">
+            <p>Check out the console to see what's going on - failure to load cordova is expected</p>
+        </div>
+
+        <div class="note">
+            <p>Don't forget to accept your browser request to store data on the local computer!</p>
+        </div>
+        <div class="note">
+            <p>If this file is opened in Chrome from a "file://" url, run Chrome with the following flags: <code>--allow-file-access-from-files --allow-file-access</code> in order to <a href="http://stackoverflow.com/questions/6427870/html5-file-api-security-error-while-reading-a-file">avoid a security error</a>.</p>
+            <p>Otherwise run the page from a web server - <a href="http://updates.html5rocks.com/2011/08/Debugging-the-Filesystem-API">More info</a></p>
+        </div>
+
+    </div>
+    <script>
+        var correctUrl = 'https://data-gov.tw.rpi.edu/w/images/thumb/f/f1/Processing_Tutorial_Finished.png/180px-Processing_Tutorial_Finished.png',
+            wrongUrl = 'http://expected.error.error/error.jpg';
+
+        var addError = function (error) {
+          document.getElementById('errors').appendChild(document.createElement('li').appendChild(document.createTextNode(error)));
+        };
+
+        ImgCachePromise.cacheFile(correctUrl, function (progressEvent) {
+          console.log('progress: ' + progressEvent.loaded + '/' + progressEvent.total);
+        })
+        .then(function () {
+          console.log('SUCCESS - expected: A cached');
+          return ImgCachePromise.getCachedFile(correctUrl)
+        })
+        .catch(function () {
+          addError('unexpected: A not cached');
+        })
+        .then(function (file_entry) {
+          console.log('SUCCESS - expected: B got file entry');
+          console.log(file_entry);
+        })
+        .catch(function () {
+          addError('unexpected: B not cached');
+        })
+        .then(function () {
+          /* test errors : those are expected to call fail callbacks */
+          return ImgCachePromise.cacheFile(wrongUrl)
+        })
+        .then(function () {
+          addError('unexpected: C cached');
+        })
+        .catch(function () {
+          console.log('SUCCESS - expected: C not cached');
+        })
+        .then(function () {
+          return ImgCachePromise.getCachedFile(wrongUrl)
+        })
+        .then(function (file_entry) {
+          addError('unexpected: D got file entry');
+          console.log(file_entry);
+        })
+        .catch(function () {
+          console.log('SUCCESS - expected: D not cached');
+        });
+    </script>
+</body>
+</html>
