@@ -285,9 +285,9 @@ Ionic example:
 
 License
 -------
-Copyright 2012-2018 (c) Christophe BENOIT
+Copyright 2021 (c) fawaz
 
 Apache License - see LICENSE.md
 
-Code from http://code.google.com/p/tiny-sha1/ is being used which is under the MIT License.
+Code  is being used which is under the MIT License.
 The copyright for this part belongs to the creator of this work.
